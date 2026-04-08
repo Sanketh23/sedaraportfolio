@@ -95,7 +95,9 @@ const StyledTable = styled.table`
 `;
 
 const ArchivePage = ({ location, data }) => {
-  const projects = data.allMarkdownRemark.edges;
+  const projects = [...data.featured.edges, ...data.projects.edges].sort(
+    (a, b) => new Date(b.node.frontmatter.date) - new Date(a.node.frontmatter.date),
+  );
 
   const revealTitle = useRef(null);
   const revealTable = useRef(null);
@@ -110,7 +112,7 @@ const ArchivePage = ({ location, data }) => {
     <Layout location={location}>
       <Helmet>
         <title>Archive | Sanketh Edara</title>
-        <link rel="canonical" href="https://brittanychiang.com/archive" />
+        <link rel="canonical" href="https://sankethedara.com/archive" />
       </Helmet>
 
       <StyledMainContainer>
@@ -196,7 +198,25 @@ export default ArchivePage;
 
 export const pageQuery = graphql`
   {
-    allMarkdownRemark(
+    featured: allMarkdownRemark(
+      filter: { fileAbsolutePath: { regex: "/featured/" } }
+      sort: { fields: [frontmatter___date], order: DESC }
+    ) {
+      edges {
+        node {
+          frontmatter {
+            date
+            title
+            tech
+            github
+            external
+            company
+          }
+          html
+        }
+      }
+    }
+    projects: allMarkdownRemark(
       filter: { fileAbsolutePath: { regex: "/projects/" } }
       sort: { fields: [frontmatter___date], order: DESC }
     ) {

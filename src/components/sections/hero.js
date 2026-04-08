@@ -1,24 +1,54 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import { email } from '@config';
 import styled from 'styled-components';
 import { theme, mixins, media, Section } from '@styles';
 const { colors, fontSizes, fonts, navDelay, loaderDelay } = theme;
 
 const StyledContainer = styled(Section)`
-  ${mixins.flexCenter};
-  flex-direction: column;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+  gap: 60px;
   min-height: 100vh;
+  align-items: center;
   ${media.tablet`padding-top: 150px;`};
-  div {
-    width: 100%;
+  ${media.tablet`
+    grid-template-columns: 1fr;
+    gap: 40px;
+    align-items: flex-start;
+  `};
+`;
+const StyledContent = styled.div`
+  width: 100%;
+`;
+const StyledPanel = styled.aside`
+  ${mixins.boxShadow};
+  position: relative;
+  width: 100%;
+  padding: 28px;
+  border: 1px solid ${colors.lightestNavy};
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(100, 255, 218, 0.05), transparent 30%),
+    linear-gradient(135deg, rgba(23, 42, 69, 0.95), rgba(10, 25, 47, 0.98));
+  overflow: hidden;
+  &:before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(rgba(100, 255, 218, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(100, 255, 218, 0.07) 1px, transparent 1px);
+    background-size: 22px 22px;
+    opacity: 0.3;
+    pointer-events: none;
   }
+`;
+const StyledPanelInner = styled.div`
+  position: relative;
+  z-index: 1;
 `;
 const StyledOverline = styled.h1`
   color: ${colors.green};
-  margin: 0 0 20px 3px;
+  margin: 0 0 18px 3px;
   font-size: ${fontSizes.md};
   font-family: ${fonts.SFMono};
   font-weight: normal;
@@ -27,7 +57,7 @@ const StyledOverline = styled.h1`
 `;
 const StyledTitle = styled.h2`
   font-size: 80px;
-  line-height: 1.1;
+  line-height: 1;
   margin: 0;
   ${media.desktop`font-size: 70px;`};
   ${media.tablet`font-size: 60px;`};
@@ -35,25 +65,127 @@ const StyledTitle = styled.h2`
   ${media.phone`font-size: 40px;`};
 `;
 const StyledSubtitle = styled.h3`
-  font-size: 80px;
-  line-height: 1.1;
-  color: ${colors.slate};
-  ${media.desktop`font-size: 70px;`};
-  ${media.tablet`font-size: 60px;`};
-  ${media.phablet`font-size: 50px;`};
-  ${media.phone`font-size: 40px;`};
+  margin-top: 12px;
+  max-width: 720px;
+  font-size: 42px;
+  line-height: 1.15;
+  color: ${colors.lightSlate};
+  ${media.desktop`font-size: 36px;`};
+  ${media.tablet`font-size: 34px;`};
+  ${media.phablet`font-size: 30px;`};
+  ${media.phone`font-size: 26px;`};
 `;
 const StyledDescription = styled.div`
-  margin-top: 25px;
-  width: 50%;
-  max-width: 500px;
+  margin-top: 26px;
+  width: 100%;
+  max-width: 640px;
+  color: ${colors.lightSlate};
+  font-size: ${fontSizes.xl};
+  line-height: 1.75;
   a {
     ${mixins.inlineLink};
   }
+  p {
+    margin: 0;
+  }
 `;
-const StyledEmailLink = styled.a`
+const StyledHighlightList = styled.ul`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 0;
+  margin: 32px 0 0;
+  list-style: none;
+`;
+const StyledHighlight = styled.li`
+  padding: 10px 14px;
+  border: 1px solid ${colors.lightestNavy};
+  border-radius: 999px;
+  background-color: rgba(23, 42, 69, 0.75);
+  color: ${colors.lightestSlate};
+  font-size: ${fontSizes.sm};
+  font-family: ${fonts.SFMono};
+`;
+const StyledCtaRow = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 40px;
+`;
+const StyledPrimaryLink = styled.a`
   ${mixins.bigButton};
-  margin-top: 50px;
+  font-weight: 700;
+`;
+const StyledSecondaryLink = styled.a`
+  ${mixins.bigButton};
+  font-weight: 700;
+  background-color: ${colors.transGreen};
+`;
+const StyledSkillList = styled.ul`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  padding: 0;
+  margin: 28px 0 0;
+  list-style: none;
+`;
+const StyledSkill = styled.li`
+  color: ${colors.green};
+  font-size: ${fontSizes.smish};
+  font-family: ${fonts.SFMono};
+`;
+const StyledPanelLabel = styled.p`
+  margin: 0 0 18px;
+  color: ${colors.green};
+  font-family: ${fonts.SFMono};
+  font-size: ${fontSizes.sm};
+`;
+const StyledPanelHeading = styled.h4`
+  margin: 0 0 24px;
+  color: ${colors.lightestSlate};
+  font-size: 26px;
+`;
+const StyledPanelList = styled.div`
+  display: grid;
+  gap: 14px;
+`;
+const StyledPanelCard = styled.a`
+  display: block;
+  padding: 18px;
+  border: 1px solid rgba(100, 255, 218, 0.14);
+  border-radius: 14px;
+  background-color: rgba(10, 25, 47, 0.84);
+  text-decoration: none;
+  transition: ${theme.transition};
+  &:hover,
+  &:focus {
+    transform: translateY(-3px);
+    border-color: rgba(100, 255, 218, 0.35);
+  }
+`;
+const StyledPanelCardTitle = styled.h5`
+  margin: 0;
+  color: ${colors.lightestSlate};
+  font-size: ${fontSizes.xl};
+`;
+const StyledPanelCardDescription = styled.p`
+  margin: 10px 0 0;
+  color: ${colors.lightSlate};
+  line-height: 1.6;
+`;
+const StyledPanelCardStack = styled.p`
+  margin: 12px 0 0;
+  color: ${colors.green};
+  font-size: ${fontSizes.smish};
+  font-family: ${fonts.SFMono};
+`;
+const StyledPanelFooter = styled.p`
+  margin: 22px 0 0;
+  color: ${colors.slate};
+  font-size: ${fontSizes.sm};
+  a {
+    ${mixins.inlineLink};
+  }
 `;
 
 const Hero = ({ data }) => {
@@ -65,29 +197,61 @@ const Hero = ({ data }) => {
   }, []);
 
   const { frontmatter, html } = data[0].node;
+  const {
+    title,
+    name,
+    subtitle,
+    buttonText,
+    buttonSecondaryText,
+    highlights,
+    skills,
+    featuredItems,
+  } = frontmatter;
 
   const one = () => (
-    <StyledOverline style={{ transitionDelay: '100ms' }}>{frontmatter.title}</StyledOverline>
+    <StyledContent style={{ transitionDelay: '100ms' }}>
+      <StyledOverline>{title}</StyledOverline>
+      <StyledTitle>{name}.</StyledTitle>
+      <StyledSubtitle>{subtitle}</StyledSubtitle>
+      <StyledDescription dangerouslySetInnerHTML={{ __html: html }} />
+      <StyledHighlightList>
+        {highlights &&
+          highlights.map((highlight, i) => <StyledHighlight key={i}>{highlight}</StyledHighlight>)}
+      </StyledHighlightList>
+      <StyledCtaRow>
+        <StyledPrimaryLink href="/resume.pdf" target="_blank" rel="noopener noreferrer">
+          {buttonText}
+        </StyledPrimaryLink>
+        <StyledSecondaryLink href="/#projects">{buttonSecondaryText}</StyledSecondaryLink>
+      </StyledCtaRow>
+      <StyledSkillList>
+        {skills && skills.map((skill, i) => <StyledSkill key={i}>{skill}</StyledSkill>)}
+      </StyledSkillList>
+    </StyledContent>
   );
   const two = () => (
-    <StyledTitle style={{ transitionDelay: '200ms' }}>{frontmatter.name}.</StyledTitle>
-  );
-  const three = () => (
-    <StyledSubtitle style={{ transitionDelay: '300ms' }}>{frontmatter.subtitle}</StyledSubtitle>
-  );
-  const four = () => (
-    <StyledDescription
-      style={{ transitionDelay: '400ms' }}
-      dangerouslySetInnerHTML={{ __html: html }}
-    />
-  );
-  const five = () => (
-    <div style={{ transitionDelay: '500ms' }}>
-      <StyledEmailLink href={`mailto:${email}`}>Get In Touch</StyledEmailLink>
-    </div>
+    <StyledPanel style={{ transitionDelay: '200ms' }}>
+      <StyledPanelInner>
+        <StyledPanelLabel>Selected Work</StyledPanelLabel>
+        <StyledPanelHeading>What I&apos;ve built recently</StyledPanelHeading>
+        <StyledPanelList>
+          {featuredItems &&
+            featuredItems.map(({ title, description, stack, link }, i) => (
+              <StyledPanelCard href={link} key={i}>
+                <StyledPanelCardTitle>{title}</StyledPanelCardTitle>
+                <StyledPanelCardDescription>{description}</StyledPanelCardDescription>
+                <StyledPanelCardStack>{stack}</StyledPanelCardStack>
+              </StyledPanelCard>
+            ))}
+        </StyledPanelList>
+        <StyledPanelFooter>
+          Focused on full-stack engineering, machine learning, and product development.
+        </StyledPanelFooter>
+      </StyledPanelInner>
+    </StyledPanel>
   );
 
-  const items = [one, two, three, four, five];
+  const items = [one, two];
 
   return (
     <StyledContainer>

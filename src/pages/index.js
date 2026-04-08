@@ -39,6 +39,15 @@ export const pageQuery = graphql`
             name
             subtitle
             buttonText
+            buttonSecondaryText
+            highlights
+            skills
+            featuredItems {
+              title
+              description
+              stack
+              link
+            }
           }
           html
         }
