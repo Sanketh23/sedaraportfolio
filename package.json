@@ -2,7 +2,7 @@
   "name": "v1",
   "description": "Personal Website V1",
   "version": "1.0.0",
-  "author": "Yashita Namdeo <yashita.namdeo2000@gmail.com>",
+  "author": "Sanketh Edara <yashita.namdeo2000@gmail.com>",
   "repository": {
     "type": "git",
     "url": "https://github.com/yashitanamdeo/yashitanamdeo.github.io"
@@ -12,13 +12,13 @@
   ],
   "license": "MIT",
   "scripts": {
-    "build": "gatsby build",
-    "develop": "gatsby develop",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider gatsby build",
+    "develop": "NODE_OPTIONS=--openssl-legacy-provider gatsby develop",
     "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
     "start": "npm run develop",
-    "serve": "gatsby serve",
-    "clean": "gatsby clean",
-    "deploy": "gatsby build && gh-pages -d public -b main"
+    "serve": "NODE_OPTIONS=--openssl-legacy-provider gatsby serve",
+    "clean": "NODE_OPTIONS=--openssl-legacy-provider gatsby clean",
+    "deploy": "NODE_OPTIONS=--openssl-legacy-provider gatsby build && gh-pages -d public -b main"
   },
   "husky": {
     "hooks": {
@@ -77,5 +77,9 @@
     "husky": "^4.2.3",
     "lint-staged": "^10.1.2",
     "prettier": "^2.0.4"
-  }
+  },
+  "resolutions": {
+    "sharp": "^0.33.5"
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

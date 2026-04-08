@@ -109,7 +109,7 @@ const ArchivePage = ({ location, data }) => {
   return (
     <Layout location={location}>
       <Helmet>
-        <title>Archive | Yashita Namdeo</title>
+        <title>Archive | Sanketh Edara</title>
         <link rel="canonical" href="https://brittanychiang.com/archive" />
       </Helmet>
 
