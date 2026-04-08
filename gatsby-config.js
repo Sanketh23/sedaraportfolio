@@ -2,9 +2,9 @@ const config = require('./src/config');
 
 module.exports = {
   siteMetadata: {
-    title: config.siteTitle,
-    siteUrl: config.siteUrl,
-    description: config.siteDescription,
+    title: config.siteTitle || 'Sanketh Edara',
+    siteUrl: config.siteUrl || 'http://localhost:8000',
+    description: config.siteDescription || 'Portfolio of Sanketh Edara.',
     image: '/images/og.png',
   },
   plugins: [

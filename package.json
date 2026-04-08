@@ -2,10 +2,10 @@
   "name": "v1",
   "description": "Personal Website V1",
   "version": "1.0.0",
-  "author": "Sanketh Edara <yashita.namdeo2000@gmail.com>",
+  "author": "Sanketh Edara <sanketh.edara@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yashitanamdeo/yashitanamdeo.github.io"
+    "url": "https://github.com/Sanketh23"
   },
   "keywords": [
     "gatsby"

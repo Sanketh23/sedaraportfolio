@@ -40,11 +40,14 @@ const StyledLink = styled.a`
   }
 `;
 
+const safeSocialMedia = socialMedia || [];
+
 const Social = ({ isHome }) => (
   <Side isHome={isHome} orientation="left">
     <StyledList>
-      {socialMedia &&
-        socialMedia.map(({ url, name }, i) => (
+      {safeSocialMedia
+        .filter(({ url, name }) => url && name)
+        .map(({ url, name }, i) => (
           <li key={i}>
             <StyledLink
               href={url}

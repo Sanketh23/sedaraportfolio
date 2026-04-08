@@ -60,6 +60,8 @@ const StyledGitHubInfo = styled.div`
   }
 `;
 
+const safeSocialMedia = socialMedia || [];
+
 const Footer = () => {
   const [githubInfo, setGitHubInfo] = useState({
     stars: null,
@@ -86,8 +88,9 @@ const Footer = () => {
     <StyledContainer>
       <StyledSocial>
         <StyledSocialList>
-          {socialMedia &&
-            socialMedia.map(({ name, url }, i) => (
+          {safeSocialMedia
+            .filter(({ url, name }) => url && name)
+            .map(({ name, url }, i) => (
               <li key={i}>
                 <StyledSocialLink
                   href={url}
