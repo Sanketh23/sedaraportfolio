@@ -2,21 +2,21 @@
 title: 'About Me'
 avatar: 'me.jpg'
 skills:
-  - Coding
+  - Basketball
+  - Chess
   - Reading
-  - Painting
-  - Crafting
-  - Problem Solving
-  - Team Management
-  - Mentoring
+  - Music
+  - Food
 ---
 
-Hello! I'm Sanketh Edara, from Indore, also known as Mini Mumbai and the Cleanest City of India.
+I&apos;m Sanketh Edara, a Computer Science and Data Science student at Purdue University focused on building scalable software and AI-driven systems.
 
-I am a creative, time punctual, dedicated, goal-oriented individual with decent moral Values and Ethicates along with a high-energy level, honed communication skills, strong organizational skills, and meticulous attention to detail.
+I develop full-stack applications and backend systems with an emphasis on performance, reliability, and clean architecture. My work includes building real-time machine learning applications, multi-agent AI systems, and production-ready web platforms.
 
-I am pursuing my Bachelors from [SVVV, Indore](https://www.svvv.edu.in/) in Computer Science and Engineering (2018-2022) my current GPA is [3.7]() out of 4.
+I&apos;m particularly interested in problems at the intersection of systems, data, and product, where strong engineering decisions directly impact user experience and scalability.
 
-I am a member of [Developer Student Club - SVVV](https://dsc.community.dev/shri-vaishnav-vidyapeeth-vishwavidyalaya/) and have also been awarded 75% Merit Scholarship(Top 10%) by my college.
+I&apos;ve worked extensively with technologies like Python, C/C++, React, Node.js, and modern ML frameworks, and I&apos;m comfortable owning projects end-to-end, from design and implementation to deployment.
 
-Here are a few of the other activities that I love to do!
+Currently seeking software engineering opportunities where I can build high-impact systems and contribute to fast-moving, product-focused teams.
+
+Outside of engineering, a few things I keep coming back to are:

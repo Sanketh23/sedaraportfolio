@@ -53,7 +53,8 @@ const StyledProjectInner = styled.div`
   height: 100%;
   border-radius: ${theme.borderRadius};
   transition: ${theme.transition};
-  background-color: ${colors.lightNavy};
+  border: 1px solid ${colors.lightestNavy};
+  background-color: rgba(255, 255, 255, 0.02);
 `;
 const StyledProject = styled.div`
   transition: ${theme.transition};
@@ -63,6 +64,8 @@ const StyledProject = styled.div`
     outline: 0;
     ${StyledProjectInner} {
       transform: translateY(-5px);
+      border-color: rgba(123, 160, 228, 0.35);
+      background-color: rgba(123, 160, 228, 0.08);
     }
   }
 `;

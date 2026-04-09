@@ -28,17 +28,24 @@ const StyledPanel = styled.aside`
   padding: 28px;
   border: 1px solid ${colors.lightestNavy};
   border-radius: 18px;
-  background: linear-gradient(180deg, rgba(100, 255, 218, 0.05), transparent 30%),
-    linear-gradient(135deg, rgba(23, 42, 69, 0.95), rgba(10, 25, 47, 0.98));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 30%),
+    linear-gradient(135deg, rgba(37, 37, 37, 0.96), rgba(28, 28, 28, 0.98));
   overflow: hidden;
+  transition: ${theme.transition};
+  &:hover,
+  &:focus-within {
+    border-color: rgba(123, 160, 228, 0.28);
+    background: linear-gradient(180deg, rgba(123, 160, 228, 0.07), transparent 35%),
+      linear-gradient(135deg, rgba(41, 47, 60, 0.98), rgba(29, 31, 35, 0.98));
+  }
   &:before {
     content: '';
     position: absolute;
     inset: 0;
-    background-image: linear-gradient(rgba(100, 255, 218, 0.07) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(100, 255, 218, 0.07) 1px, transparent 1px);
+    background-image: linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
     background-size: 22px 22px;
-    opacity: 0.3;
+    opacity: 0.22;
     pointer-events: none;
   }
 `;
@@ -101,7 +108,7 @@ const StyledHighlight = styled.li`
   padding: 10px 14px;
   border: 1px solid ${colors.lightestNavy};
   border-radius: 999px;
-  background-color: rgba(23, 42, 69, 0.75);
+  background-color: rgba(255, 255, 255, 0.03);
   color: ${colors.lightestSlate};
   font-size: ${fontSizes.sm};
   font-family: ${fonts.SFMono};
@@ -152,15 +159,16 @@ const StyledPanelList = styled.div`
 const StyledPanelCard = styled.a`
   display: block;
   padding: 18px;
-  border: 1px solid rgba(100, 255, 218, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 14px;
-  background-color: rgba(10, 25, 47, 0.84);
+  background-color: rgba(255, 255, 255, 0.02);
   text-decoration: none;
   transition: ${theme.transition};
   &:hover,
   &:focus {
     transform: translateY(-3px);
-    border-color: rgba(100, 255, 218, 0.35);
+    border-color: rgba(123, 160, 228, 0.35);
+    background-color: rgba(123, 160, 228, 0.08);
   }
 `;
 const StyledPanelCardTitle = styled.h5`

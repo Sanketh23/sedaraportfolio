@@ -47,10 +47,17 @@ const StyledDescription = styled.div`
   position: relative;
   z-index: 2;
   padding: 25px;
-  background-color: ${colors.lightNavy};
+  border: 1px solid ${colors.lightestNavy};
+  background-color: rgba(255, 255, 255, 0.02);
   color: ${colors.lightSlate};
   font-size: ${fontSizes.lg};
   border-radius: ${theme.borderRadius};
+  transition: ${theme.transition};
+  &:hover,
+  &:focus-within {
+    border-color: rgba(123, 160, 228, 0.35);
+    background-color: rgba(123, 160, 228, 0.08);
+  }
   ${media.thone`
     background-color: transparent;
     padding: 20px 0;
