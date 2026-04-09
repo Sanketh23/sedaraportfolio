@@ -198,6 +198,9 @@ const Hero = ({ data }) => {
     skills,
     featuredItems,
   } = frontmatter;
+  const currentDate = new Date();
+  const currentDateString = currentDate.toISOString().slice(0, 10);
+  const commitGridSrc = `https://github.com/users/Sanketh23/contributions?from=2025-04-01&to=${currentDateString}`;
 
   const one = () => (
     <StyledContent style={{ transitionDelay: '100ms' }}>
@@ -210,7 +213,7 @@ const Hero = ({ data }) => {
         rel="nofollow noopener noreferrer"
         aria-label="Sanketh23 GitHub profile">
         <StyledCommitGrid
-          src="https://ghchart.rshah.org/39d353/Sanketh23"
+          src={commitGridSrc}
           alt="Sanketh23 GitHub contribution graph"
           loading="lazy"
         />
