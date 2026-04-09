@@ -12,7 +12,7 @@ const StyledMainContainer = styled(Main)`
 const IndexPage = ({ location, data }) => (
   <Layout location={location}>
     <StyledMainContainer className="fillHeight">
-      <Hero data={data.hero.edges} />
+      <Hero data={data.hero.edges} githubData={data.github.edges} />
       <About data={data.about.edges} />
       <Jobs data={data.jobs.edges} />
       <Featured data={data.featured.edges} />
@@ -50,6 +50,23 @@ export const pageQuery = graphql`
             }
           }
           html
+        }
+      }
+    }
+    github: allGitHubContributionGraph {
+      edges {
+        node {
+          rangeStart
+          rangeEnd
+          weeks {
+            firstDay
+            contributionDays {
+              date
+              count
+              level
+              weekday
+            }
+          }
         }
       }
     }

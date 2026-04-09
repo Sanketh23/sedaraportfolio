@@ -88,14 +88,38 @@ const StyledCommitGridLink = styled.a`
   width: 100%;
   margin-top: 42px;
   max-width: 1320px;
+  overflow-x: auto;
 `;
-const StyledCommitGrid = styled.img`
-  display: block;
-  width: 100%;
-  min-width: 0;
-  height: auto;
-  border-radius: 14px;
-  filter: grayscale(0.02) contrast(1.02);
+const StyledCommitGrid = styled.div`
+  display: inline-flex;
+  gap: 6px;
+  padding: 6px 0;
+  min-width: max-content;
+`;
+const StyledWeek = styled.div`
+  display: grid;
+  grid-template-rows: repeat(7, 18px);
+  gap: 6px;
+`;
+const StyledDay = styled.span`
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  background-color: ${props => {
+    switch (props.level) {
+      case 4:
+        return '#39d353';
+      case 3:
+        return '#26a641';
+      case 2:
+        return '#006d32';
+      case 1:
+        return '#0e4429';
+      default:
+        return '#2a2a2a';
+    }
+  }};
+  border: 1px solid rgba(255, 255, 255, 0.04);
 `;
 const StyledCtaRow = styled.div`
   display: flex;
@@ -180,7 +204,7 @@ const StyledPanelFooter = styled.p`
   }
 `;
 
-const Hero = ({ data }) => {
+const Hero = ({ data, githubData }) => {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -198,12 +222,8 @@ const Hero = ({ data }) => {
     skills,
     featuredItems,
   } = frontmatter;
-  const currentDate = new Date();
-  const previousYearDate = new Date(currentDate);
-  previousYearDate.setFullYear(currentDate.getFullYear() - 1);
-  const previousYearDateString = previousYearDate.toISOString().slice(0, 10);
-  const currentDateString = currentDate.toISOString().slice(0, 10);
-  const commitGridSrc = `https://github.com/users/Sanketh23/contributions?from=${previousYearDateString}&to=${currentDateString}`;
+  const contributionGraph = githubData && githubData.length > 0 ? githubData[0].node : null;
+  const weeks = contributionGraph ? contributionGraph.weeks : [];
 
   const one = () => (
     <StyledContent style={{ transitionDelay: '100ms' }}>
@@ -215,11 +235,19 @@ const Hero = ({ data }) => {
         target="_blank"
         rel="nofollow noopener noreferrer"
         aria-label="Sanketh23 GitHub profile">
-        <StyledCommitGrid
-          src={commitGridSrc}
-          alt="Sanketh23 GitHub contribution graph"
-          loading="lazy"
-        />
+        <StyledCommitGrid>
+          {weeks.map((week, i) => (
+            <StyledWeek key={`${week.firstDay}-${i}`}>
+              {week.contributionDays.map(day => (
+                <StyledDay
+                  key={day.date}
+                  level={day.level}
+                  title={`${day.date}: ${day.count} contributions`}
+                />
+              ))}
+            </StyledWeek>
+          ))}
+        </StyledCommitGrid>
       </StyledCommitGridLink>
       <StyledCtaRow>
         <StyledPrimaryLink href="/resume.pdf" target="_blank" rel="noopener noreferrer">
@@ -272,6 +300,7 @@ const Hero = ({ data }) => {
 
 Hero.propTypes = {
   data: PropTypes.array.isRequired,
+  githubData: PropTypes.array.isRequired,
 };
 
 export default Hero;
