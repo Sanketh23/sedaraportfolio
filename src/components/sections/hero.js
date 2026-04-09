@@ -199,8 +199,11 @@ const Hero = ({ data }) => {
     featuredItems,
   } = frontmatter;
   const currentDate = new Date();
+  const previousYearDate = new Date(currentDate);
+  previousYearDate.setFullYear(currentDate.getFullYear() - 1);
+  const previousYearDateString = previousYearDate.toISOString().slice(0, 10);
   const currentDateString = currentDate.toISOString().slice(0, 10);
-  const commitGridSrc = `https://github.com/users/Sanketh23/contributions?from=2025-04-01&to=${currentDateString}`;
+  const commitGridSrc = `https://github.com/users/Sanketh23/contributions?from=${previousYearDateString}&to=${currentDateString}`;
 
   const one = () => (
     <StyledContent style={{ transitionDelay: '100ms' }}>
