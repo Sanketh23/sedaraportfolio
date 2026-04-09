@@ -7,8 +7,8 @@ const { colors, fontSizes, fonts, navDelay, loaderDelay } = theme;
 
 const StyledContainer = styled(Section)`
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
-  gap: 60px;
+  grid-template-columns: minmax(0, 1.75fr) minmax(300px, 0.58fr);
+  gap: 112px;
   min-height: 100vh;
   align-items: center;
   ${media.tablet`padding-top: 150px;`};
@@ -20,12 +20,13 @@ const StyledContainer = styled(Section)`
 `;
 const StyledContent = styled.div`
   width: 100%;
+  max-width: 1180px;
 `;
 const StyledPanel = styled.aside`
   ${mixins.boxShadow};
   position: relative;
   width: 100%;
-  padding: 28px;
+  padding: 24px;
   border: 1px solid ${colors.lightestNavy};
   border-radius: 18px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 30%),
@@ -63,61 +64,44 @@ const StyledOverline = styled.h1`
   ${media.tablet`font-size: ${fontSizes.smish};`};
 `;
 const StyledTitle = styled.h2`
-  font-size: 80px;
+  font-size: 90px;
   line-height: 1;
   margin: 0;
-  ${media.desktop`font-size: 70px;`};
+  ${media.desktop`font-size: 80px;`};
   ${media.tablet`font-size: 60px;`};
   ${media.phablet`font-size: 50px;`};
   ${media.phone`font-size: 40px;`};
 `;
 const StyledSubtitle = styled.h3`
-  margin-top: 12px;
-  max-width: 720px;
-  font-size: 42px;
+  margin-top: 14px;
+  max-width: 980px;
+  font-size: 50px;
   line-height: 1.15;
   color: ${colors.lightSlate};
-  ${media.desktop`font-size: 36px;`};
+  ${media.desktop`font-size: 44px;`};
   ${media.tablet`font-size: 34px;`};
   ${media.phablet`font-size: 30px;`};
   ${media.phone`font-size: 26px;`};
 `;
-const StyledDescription = styled.div`
-  margin-top: 26px;
+const StyledCommitGridLink = styled.a`
+  display: block;
   width: 100%;
-  max-width: 640px;
-  color: ${colors.lightSlate};
-  font-size: ${fontSizes.xl};
-  line-height: 1.75;
-  a {
-    ${mixins.inlineLink};
-  }
-  p {
-    margin: 0;
-  }
+  margin-top: 42px;
+  max-width: 1320px;
 `;
-const StyledHighlightList = styled.ul`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  padding: 0;
-  margin: 32px 0 0;
-  list-style: none;
-`;
-const StyledHighlight = styled.li`
-  padding: 10px 14px;
-  border: 1px solid ${colors.lightestNavy};
-  border-radius: 999px;
-  background-color: rgba(255, 255, 255, 0.03);
-  color: ${colors.lightestSlate};
-  font-size: ${fontSizes.sm};
-  font-family: ${fonts.SFMono};
+const StyledCommitGrid = styled.img`
+  display: block;
+  width: 100%;
+  min-width: 0;
+  height: auto;
+  border-radius: 14px;
+  filter: grayscale(0.02) contrast(1.02);
 `;
 const StyledCtaRow = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
-  margin-top: 40px;
+  margin-top: 42px;
 `;
 const StyledPrimaryLink = styled.a`
   ${mixins.bigButton};
@@ -133,7 +117,7 @@ const StyledSkillList = styled.ul`
   flex-wrap: wrap;
   gap: 10px 18px;
   padding: 0;
-  margin: 28px 0 0;
+  margin: 42px 0 0;
   list-style: none;
 `;
 const StyledSkill = styled.li`
@@ -204,14 +188,13 @@ const Hero = ({ data }) => {
     return () => clearTimeout(timeout);
   }, []);
 
-  const { frontmatter, html } = data[0].node;
+  const { frontmatter } = data[0].node;
   const {
     title,
     name,
     subtitle,
     buttonText,
     buttonSecondaryText,
-    highlights,
     skills,
     featuredItems,
   } = frontmatter;
@@ -221,11 +204,17 @@ const Hero = ({ data }) => {
       <StyledOverline>{title}</StyledOverline>
       <StyledTitle>{name}.</StyledTitle>
       <StyledSubtitle>{subtitle}</StyledSubtitle>
-      <StyledDescription dangerouslySetInnerHTML={{ __html: html }} />
-      <StyledHighlightList>
-        {highlights &&
-          highlights.map((highlight, i) => <StyledHighlight key={i}>{highlight}</StyledHighlight>)}
-      </StyledHighlightList>
+      <StyledCommitGridLink
+        href="https://github.com/Sanketh23"
+        target="_blank"
+        rel="nofollow noopener noreferrer"
+        aria-label="Sanketh23 GitHub profile">
+        <StyledCommitGrid
+          src="https://ghchart.rshah.org/39d353/Sanketh23"
+          alt="Sanketh23 GitHub contribution graph"
+          loading="lazy"
+        />
+      </StyledCommitGridLink>
       <StyledCtaRow>
         <StyledPrimaryLink href="/resume.pdf" target="_blank" rel="noopener noreferrer">
           {buttonText}

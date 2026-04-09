@@ -10,13 +10,15 @@ highlights:
   - 'Previous Qualcomm Intern'
   - 'Open to 2026 SWE Roles'
 skills:
-  - 'Java'
   - 'Python'
   - 'C++'
+  - 'Java'
+  - 'TypeScript'
+  - 'CSS'
+  - 'HTML'
   - 'React'
   - 'Node.js'
   - 'SQL'
-  - 'TensorFlow'
   - 'Git'
 featuredItems:
   - title: 'Nebulus'
