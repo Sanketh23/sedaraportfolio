@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import styled from 'styled-components';
@@ -92,7 +92,6 @@ const StyledCommitGridLink = styled.a`
 `;
 const StyledCommitGrid = styled.div`
   display: inline-flex;
-  flex-direction: row-reverse;
   gap: 4px;
   padding: 6px 0;
   min-width: max-content;
@@ -208,6 +207,7 @@ const StyledPanelFooter = styled.p`
 const Hero = ({ data }) => {
   const [isMounted, setIsMounted] = useState(false);
   const [weeks, setWeeks] = useState([]);
+  const commitGridRef = useRef(null);
 
   useEffect(() => {
     const timeout = setTimeout(() => setIsMounted(true), navDelay);
@@ -235,6 +235,12 @@ const Hero = ({ data }) => {
     };
   }, []);
 
+  useEffect(() => {
+    if (commitGridRef.current && weeks.length > 0) {
+      commitGridRef.current.scrollLeft = commitGridRef.current.scrollWidth;
+    }
+  }, [weeks]);
+
   const { frontmatter } = data[0].node;
   const {
     title,
@@ -251,6 +257,7 @@ const Hero = ({ data }) => {
       <StyledTitle>{name}.</StyledTitle>
       <StyledSubtitle>{subtitle}</StyledSubtitle>
       <StyledCommitGridLink
+        ref={commitGridRef}
         href="https://github.com/Sanketh23"
         target="_blank"
         rel="nofollow noopener noreferrer"
