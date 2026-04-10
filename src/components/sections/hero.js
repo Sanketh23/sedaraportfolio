@@ -90,6 +90,65 @@ const StyledCommitGridLink = styled.a`
   max-width: 1320px;
   overflow-x: auto;
 `;
+const StyledCommitSummary = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  color: ${colors.lightSlate};
+  font-size: ${fontSizes.sm};
+  line-height: 1.5;
+`;
+const StyledCommitMeta = styled.span`
+  color: ${colors.slate};
+  font-family: ${fonts.SFMono};
+  font-size: ${fontSizes.xs};
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+`;
+const StyledCommitShell = styled.div`
+  display: inline-flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: max-content;
+`;
+const StyledCommitMonths = styled.div`
+  display: grid;
+  grid-template-columns: 28px repeat(${props => props.columns}, 14px);
+  column-gap: 4px;
+  align-items: end;
+  min-width: max-content;
+`;
+const StyledMonthLabel = styled.span`
+  grid-column: ${props => props.column};
+  color: ${colors.slate};
+  font-size: ${fontSizes.xs};
+  font-family: ${fonts.SFMono};
+  white-space: nowrap;
+`;
+const StyledCommitBody = styled.div`
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: max-content;
+`;
+const StyledWeekdayLabels = styled.div`
+  display: grid;
+  grid-template-rows: repeat(7, 14px);
+  gap: 4px;
+  padding-top: 7px;
+`;
+const StyledWeekdayLabel = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 28px;
+  color: ${colors.slate};
+  font-size: ${fontSizes.xxs};
+  font-family: ${fonts.SFMono};
+`;
 const StyledCommitGrid = styled.div`
   display: inline-flex;
   gap: 4px;
@@ -105,6 +164,7 @@ const StyledDay = styled.span`
   width: 14px;
   height: 14px;
   border-radius: 3px;
+  cursor: pointer;
   background-color: ${props => {
     switch (props.level) {
       case 4:
@@ -120,6 +180,51 @@ const StyledDay = styled.span`
     }
   }};
   border: 1px solid rgba(255, 255, 255, 0.04);
+`;
+const StyledLegend = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 14px;
+`;
+const StyledTooltip = styled.div`
+  color: ${colors.lightSlate};
+  font-size: ${fontSizes.sm};
+  line-height: 1.5;
+`;
+const StyledLegendScale = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: ${colors.slate};
+  font-size: ${fontSizes.xs};
+  font-family: ${fonts.SFMono};
+`;
+const StyledLegendSwatches = styled.div`
+  display: inline-flex;
+  gap: 4px;
+`;
+const StyledLegendSwatch = styled.span`
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  background-color: ${props => {
+    switch (props.level) {
+      case 4:
+        return '#39d353';
+      case 3:
+        return '#26a641';
+      case 2:
+        return '#006d32';
+      case 1:
+        return '#0e4429';
+      default:
+        return '#2a2a2a';
+    }
+  }};
 `;
 const StyledCtaRow = styled.div`
   display: flex;
@@ -206,7 +311,8 @@ const StyledPanelFooter = styled.p`
 
 const Hero = ({ data }) => {
   const [isMounted, setIsMounted] = useState(false);
-  const [weeks, setWeeks] = useState([]);
+  const [graph, setGraph] = useState({ rangeStart: '', rangeEnd: '', weeks: [] });
+  const [activeDay, setActiveDay] = useState(null);
   const commitGridRef = useRef(null);
 
   useEffect(() => {
@@ -221,12 +327,16 @@ const Hero = ({ data }) => {
       .then(response => response.json())
       .then(json => {
         if (isActive && json && Array.isArray(json.weeks)) {
-          setWeeks(json.weeks);
+          setGraph({
+            rangeStart: json.rangeStart || '',
+            rangeEnd: json.rangeEnd || '',
+            weeks: json.weeks,
+          });
         }
       })
       .catch(() => {
         if (isActive) {
-          setWeeks([]);
+          setGraph({ rangeStart: '', rangeEnd: '', weeks: [] });
         }
       });
 
@@ -234,12 +344,6 @@ const Hero = ({ data }) => {
       isActive = false;
     };
   }, []);
-
-  useEffect(() => {
-    if (commitGridRef.current && weeks.length > 0) {
-      commitGridRef.current.scrollLeft = commitGridRef.current.scrollWidth;
-    }
-  }, [weeks]);
 
   const { frontmatter } = data[0].node;
   const {
@@ -251,6 +355,41 @@ const Hero = ({ data }) => {
     skills,
     featuredItems,
   } = frontmatter;
+  const { rangeStart, rangeEnd, weeks } = graph;
+  const displayWeeks = [...weeks].reverse();
+  const totalContributions = weeks.reduce(
+    (sum, week) => sum + week.contributionDays.reduce((weekSum, day) => weekSum + day.count, 0),
+    0,
+  );
+  const monthLabels = displayWeeks.reduce((labels, week, index) => {
+    const monthLabel = new Date(week.firstDay).toLocaleDateString('en-US', { month: 'short' });
+    const previous = labels[labels.length - 1];
+
+    if (!previous || previous.label !== monthLabel) {
+      labels.push({ label: monthLabel, column: index + 2 });
+    }
+
+    return labels;
+  }, []);
+  const defaultTooltip =
+    rangeStart && rangeEnd
+      ? `Showing contributions from ${new Date(rangeStart).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      })} to ${new Date(rangeEnd).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      })}.`
+      : 'Showing the last year of GitHub contributions.';
+  const tooltipText = activeDay
+    ? `${new Date(activeDay.date).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    })} - ${activeDay.count} contribution${activeDay.count === 1 ? '' : 's'}`
+    : defaultTooltip;
   const one = () => (
     <StyledContent style={{ transitionDelay: '100ms' }}>
       <StyledOverline>{title}</StyledOverline>
@@ -262,19 +401,61 @@ const Hero = ({ data }) => {
         target="_blank"
         rel="nofollow noopener noreferrer"
         aria-label="Sanketh23 GitHub profile">
-        <StyledCommitGrid>
-          {weeks.map((week, i) => (
-            <StyledWeek key={`${week.firstDay}-${i}`}>
-              {week.contributionDays.map(day => (
-                <StyledDay
-                  key={day.date}
-                  level={day.level}
-                  title={`${day.date}: ${day.count} contributions`}
-                />
+        <StyledCommitSummary>
+          <span>{totalContributions} contributions in the last year</span>
+          <StyledCommitMeta>Live from GitHub</StyledCommitMeta>
+        </StyledCommitSummary>
+        <StyledCommitShell>
+          <StyledCommitMonths columns={displayWeeks.length}>
+            <span />
+            {monthLabels.map(label => (
+              <StyledMonthLabel key={`${label.label}-${label.column}`} column={label.column}>
+                {label.label}
+              </StyledMonthLabel>
+            ))}
+          </StyledCommitMonths>
+          <StyledCommitBody>
+            <StyledWeekdayLabels aria-hidden="true">
+              <StyledWeekdayLabel />
+              <StyledWeekdayLabel>Mon</StyledWeekdayLabel>
+              <StyledWeekdayLabel />
+              <StyledWeekdayLabel>Wed</StyledWeekdayLabel>
+              <StyledWeekdayLabel />
+              <StyledWeekdayLabel>Fri</StyledWeekdayLabel>
+              <StyledWeekdayLabel />
+            </StyledWeekdayLabels>
+            <StyledCommitGrid>
+              {displayWeeks.map((week, i) => (
+                <StyledWeek key={`${week.firstDay}-${i}`}>
+                  {week.contributionDays.map(day => (
+                    <StyledDay
+                      key={day.date}
+                      level={day.level}
+                      title={`${day.date}: ${day.count} contributions`}
+                      onMouseEnter={() => setActiveDay(day)}
+                      onFocus={() => setActiveDay(day)}
+                      onMouseLeave={() => setActiveDay(null)}
+                      onBlur={() => setActiveDay(null)}
+                      tabIndex="0"
+                    />
+                  ))}
+                </StyledWeek>
               ))}
-            </StyledWeek>
-          ))}
-        </StyledCommitGrid>
+            </StyledCommitGrid>
+          </StyledCommitBody>
+        </StyledCommitShell>
+        <StyledLegend>
+          <StyledTooltip>{tooltipText}</StyledTooltip>
+          <StyledLegendScale>
+            <span>Less</span>
+            <StyledLegendSwatches aria-hidden="true">
+              {[0, 1, 2, 3, 4].map(level => (
+                <StyledLegendSwatch key={level} level={level} />
+              ))}
+            </StyledLegendSwatches>
+            <span>More</span>
+          </StyledLegendScale>
+        </StyledLegend>
       </StyledCommitGridLink>
       <StyledCtaRow>
         <StyledPrimaryLink href="/resume.pdf" target="_blank" rel="noopener noreferrer">
