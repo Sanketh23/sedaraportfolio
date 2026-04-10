@@ -365,7 +365,10 @@ const Hero = ({ data }) => {
     const monthLabel = new Date(week.firstDay).toLocaleDateString('en-US', { month: 'short' });
     const previous = labels[labels.length - 1];
 
-    if (!previous || previous.label !== monthLabel) {
+    if (
+      (!previous || previous.label !== monthLabel) &&
+      (!previous || index - (previous.column - 2) >= 4)
+    ) {
       labels.push({ label: monthLabel, column: index + 2 });
     }
 
