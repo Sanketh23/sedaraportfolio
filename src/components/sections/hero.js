@@ -309,6 +309,24 @@ const StyledPanelFooter = styled.p`
   }
 `;
 
+const formatGraphDate = value => {
+  if (!value) {
+    return '';
+  }
+
+  const [year, month, day] = value.split('-').map(Number);
+
+  if (!year || !month || !day) {
+    return value;
+  }
+
+  return new Date(year, month - 1, day).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+};
+
 const Hero = ({ data }) => {
   const [isMounted, setIsMounted] = useState(false);
   const [graph, setGraph] = useState({ rangeStart: '', rangeEnd: '', weeks: [] });
@@ -362,7 +380,10 @@ const Hero = ({ data }) => {
     0,
   );
   const monthLabels = displayWeeks.reduce((labels, week, index) => {
-    const monthLabel = new Date(week.firstDay).toLocaleDateString('en-US', { month: 'short' });
+    const [year, month, day] = week.firstDay.split('-').map(Number);
+    const monthLabel = new Date(year, month - 1, day).toLocaleDateString('en-US', {
+      month: 'short',
+    });
     const previous = labels[labels.length - 1];
 
     if (
@@ -376,22 +397,12 @@ const Hero = ({ data }) => {
   }, []);
   const defaultTooltip =
     rangeStart && rangeEnd
-      ? `Showing contributions from ${new Date(rangeStart).toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-      })} to ${new Date(rangeEnd).toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-      })}.`
+      ? `Showing contributions from ${formatGraphDate(rangeStart)} to ${formatGraphDate(rangeEnd)}.`
       : 'Showing the last year of GitHub contributions.';
   const tooltipText = activeDay
-    ? `${new Date(activeDay.date).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    })} - ${activeDay.count} contribution${activeDay.count === 1 ? '' : 's'}`
+    ? `${formatGraphDate(activeDay.date)} - ${activeDay.count} contribution${
+      activeDay.count === 1 ? '' : 's'
+    }`
     : defaultTooltip;
   const one = () => (
     <StyledContent style={{ transitionDelay: '100ms' }}>
@@ -434,7 +445,7 @@ const Hero = ({ data }) => {
                     <StyledDay
                       key={day.date}
                       level={day.level}
-                      title={`${day.date}: ${day.count} contributions`}
+                      title={`${formatGraphDate(day.date)}: ${day.count} contributions`}
                       onMouseEnter={() => setActiveDay(day)}
                       onFocus={() => setActiveDay(day)}
                       onMouseLeave={() => setActiveDay(null)}
