@@ -4,6 +4,7 @@
  * See: https://www.gatsbyjs.org/docs/node-apis/
  */
 
+const fs = require('fs');
 const path = require('path');
 const https = require('https');
 const _ = require('lodash');
@@ -13,20 +14,20 @@ exports.createSchemaCustomization = ({ actions }) => {
 
   createTypes(`
     type GitHubContributionDay {
-      date: Date!
+      date: Date! @dateformat
       count: Int!
       level: Int!
       weekday: Int!
     }
 
     type GitHubContributionWeek {
-      firstDay: Date!
+      firstDay: Date! @dateformat
       contributionDays: [GitHubContributionDay!]!
     }
 
     type GitHubContributionGraph implements Node {
-      rangeStart: Date!
-      rangeEnd: Date!
+      rangeStart: Date! @dateformat
+      rangeEnd: Date! @dateformat
       weeks: [GitHubContributionWeek!]!
     }
   `);
@@ -44,8 +45,10 @@ exports.sourceNodes = async ({ actions, createContentDigest, createNodeId, repor
     rangeEnd: rangeEnd.toISOString().slice(0, 10),
     weeks: [],
   };
+  const staticDataPath = path.resolve(__dirname, 'static', 'github-contributions.json');
 
   const createGraphNode = data => {
+    fs.writeFileSync(staticDataPath, JSON.stringify(data));
     createNode({
       ...data,
       id: createNodeId(`github-contribution-graph`),
