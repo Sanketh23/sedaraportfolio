@@ -92,19 +92,20 @@ const StyledCommitGridLink = styled.a`
 `;
 const StyledCommitGrid = styled.div`
   display: inline-flex;
-  gap: 6px;
+  flex-direction: row-reverse;
+  gap: 4px;
   padding: 6px 0;
   min-width: max-content;
 `;
 const StyledWeek = styled.div`
   display: grid;
-  grid-template-rows: repeat(7, 18px);
-  gap: 6px;
+  grid-template-rows: repeat(7, 14px);
+  gap: 4px;
 `;
 const StyledDay = styled.span`
-  width: 18px;
-  height: 18px;
-  border-radius: 4px;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
   background-color: ${props => {
     switch (props.level) {
       case 4:
@@ -204,12 +205,34 @@ const StyledPanelFooter = styled.p`
   }
 `;
 
-const Hero = ({ data, githubData }) => {
+const Hero = ({ data }) => {
   const [isMounted, setIsMounted] = useState(false);
+  const [weeks, setWeeks] = useState([]);
 
   useEffect(() => {
     const timeout = setTimeout(() => setIsMounted(true), navDelay);
     return () => clearTimeout(timeout);
+  }, []);
+
+  useEffect(() => {
+    let isActive = true;
+
+    fetch('/github-contributions.json')
+      .then(response => response.json())
+      .then(json => {
+        if (isActive && json && Array.isArray(json.weeks)) {
+          setWeeks(json.weeks);
+        }
+      })
+      .catch(() => {
+        if (isActive) {
+          setWeeks([]);
+        }
+      });
+
+    return () => {
+      isActive = false;
+    };
   }, []);
 
   const { frontmatter } = data[0].node;
@@ -222,9 +245,6 @@ const Hero = ({ data, githubData }) => {
     skills,
     featuredItems,
   } = frontmatter;
-  const contributionGraph = githubData && githubData.length > 0 ? githubData[0].node : null;
-  const weeks = contributionGraph ? contributionGraph.weeks : [];
-
   const one = () => (
     <StyledContent style={{ transitionDelay: '100ms' }}>
       <StyledOverline>{title}</StyledOverline>
@@ -300,7 +320,6 @@ const Hero = ({ data, githubData }) => {
 
 Hero.propTypes = {
   data: PropTypes.array.isRequired,
-  githubData: PropTypes.array.isRequired,
 };
 
 export default Hero;
