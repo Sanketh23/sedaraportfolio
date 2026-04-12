@@ -340,23 +340,38 @@ const Hero = ({ data }) => {
 
   useEffect(() => {
     let isActive = true;
+    const loadGraph = async () => {
+      const endpoints = ['/api/github-contributions', '/github-contributions.json'];
 
-    fetch('/github-contributions.json')
-      .then(response => response.json())
-      .then(json => {
-        if (isActive && json && Array.isArray(json.weeks)) {
-          setGraph({
-            rangeStart: json.rangeStart || '',
-            rangeEnd: json.rangeEnd || '',
-            weeks: json.weeks,
-          });
+      for (const endpoint of endpoints) {
+        try {
+          const response = await fetch(endpoint);
+
+          if (!response.ok) {
+            continue;
+          }
+
+          const json = await response.json();
+
+          if (isActive && json && Array.isArray(json.weeks)) {
+            setGraph({
+              rangeStart: json.rangeStart || '',
+              rangeEnd: json.rangeEnd || '',
+              weeks: json.weeks,
+            });
+            return;
+          }
+        } catch (error) {
+          // Try the next source.
         }
-      })
-      .catch(() => {
-        if (isActive) {
-          setGraph({ rangeStart: '', rangeEnd: '', weeks: [] });
-        }
-      });
+      }
+
+      if (isActive) {
+        setGraph({ rangeStart: '', rangeEnd: '', weeks: [] });
+      }
+    };
+
+    loadGraph();
 
     return () => {
       isActive = false;
