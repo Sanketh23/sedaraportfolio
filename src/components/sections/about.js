@@ -25,7 +25,7 @@ const StyledContent = styled.div`
 `;
 const SkillsContainer = styled.ul`
   display: grid;
-  grid-template-columns: repeat(2, minmax(140px, 200px));
+  grid-template-columns: 1fr;
   overflow: hidden;
   padding: 0;
   margin: 20px 0 0 0;
@@ -33,7 +33,7 @@ const SkillsContainer = styled.ul`
 `;
 const Skill = styled.li`
   position: relative;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   padding-left: 20px;
   font-family: ${fonts.SFMono};
   font-size: ${fontSizes.smish};
@@ -46,6 +46,12 @@ const Skill = styled.li`
     font-size: ${fontSizes.sm};
     line-height: 12px;
   }
+`;
+const SkillNote = styled.span`
+  display: block;
+  font-size: ${fontSizes.xs};
+  color: ${colors.slate};
+  margin-top: 2px;
 `;
 const StyledPic = styled.div`
   position: relative;
@@ -125,7 +131,18 @@ const About = ({ data }) => {
         <StyledContent>
           <div dangerouslySetInnerHTML={{ __html: html }} />
           <SkillsContainer>
-            {skills && skills.map((skill, i) => <Skill key={i}>{skill}</Skill>)}
+            {skills &&
+              skills.map((skill, i) => {
+                const match = skill.match(/^([^(]+?)\s*\((.+)\)\s*$/);
+                const name = match ? match[1] : skill;
+                const note = match ? match[2] : null;
+                return (
+                  <Skill key={i}>
+                    {name}
+                    {note && <SkillNote>{note}</SkillNote>}
+                  </Skill>
+                );
+              })}
           </SkillsContainer>
         </StyledContent>
         <StyledPic>

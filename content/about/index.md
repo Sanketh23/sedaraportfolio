@@ -2,11 +2,11 @@
 title: 'About Me'
 avatar: 'me.jpg'
 skills:
-  - Basketball
-  - Chess
+  - 'Basketball (IM basketball)'
+  - 'Chess (93rd percentile worldwide · Champion League on Chess.com)'
+  - "Rubik's Cubing (1x1 😊 · 2x2 <12s · 3x3 <45s · 4x4 solvable)"
   - Reading
   - Music
-  - Food
 ---
 
 I&apos;m Sanketh Edara, a Computer Science and Data Science student at Purdue University focused on building scalable software and AI-driven systems.
